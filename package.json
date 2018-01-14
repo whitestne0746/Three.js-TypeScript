@@ -4,6 +4,7 @@
     "watch": "webpack -w"
   },
   "devDependencies": {
+    "@types/node": "^9.3.0",
     "awesome-typescript-loader": "^3.4.1",
     "source-map-loader": "^0.2.3",
     "three-js": "^79.0.0",
@@ -12,6 +13,7 @@
   },
   "dependencies": {
     "@types/three": "^0.84.37",
-    "three": "^0.87.1"
+    "three": "^0.87.1",
+    "tslint": "^5.9.1"
   }
 }
