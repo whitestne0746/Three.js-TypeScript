@@ -1,5 +1,15 @@
-//import * as THREE from "three";
-const THREE = require("three-js")(["EffectComposer", "OrbitControls"]);
+//import "imports-loader?THREE=three!three/examples/js/controls/FirstPersonControls.js";
+import * as THREE from "three";
+import { default as cameramove } from './cameramove'
+//import {  } from ''
+//const THREE = require("three-js")(["EffectComposer", "OrbitControls"]);
+//const FirstPersonControls = require('three-first-person-controls');
+
+var a_push, s_push, d_push, w_push, up_push, down_push,
+  q_push, e_push, r_push, zeroLook;
+
+var Xrotate = 0;
+var Radius;
 
 window.addEventListener("DOMContentLoaded", () => {
   // レンダラーを作成
@@ -20,8 +30,8 @@ window.addEventListener("DOMContentLoaded", () => {
   camera.position.set(0, 10, 200);
   camera.setLens(20, 100);
 
-  const controls = new THREE.OrbitControls(camera);
-
+  // --------------------------------------------------------------------
+  // オブジェクト
   // 光源
   const light = new THREE.DirectionalLight(0xf4a460);
   light.position.set(50, 100, -100);
@@ -91,7 +101,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // 地面
   const plane = new THREE.Mesh(
-    new THREE.PlaneGeometry(1000, 1000),
+    new THREE.PlaneGeometry(10000, 10000),
     new THREE.MeshPhongMaterial({
       color: 0xdcdcdc
     })
@@ -122,9 +132,19 @@ window.addEventListener("DOMContentLoaded", () => {
 
   renderer.shadowMapEnabled = true;
 
+  // read city model
+  loader.load("../model/center-city-sci-fi.json", obj => {
+    const city = obj;
+    city.scale.set(0.5, 0.5, 0.5);
+    city.position.set(-200, 0, 200);
+    scene.add(city);
+  });
+
+  // --------------------------------------------------------------------
+
   document.body.appendChild(renderer.domElement);
 
-  camera.lookAt(scene.position);
+  //camera.lookAt(scene.position);
 
   var angle = Math.PI / 2;
   var angle1 = 0;
@@ -134,8 +154,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
   const animate = (): void => {
     requestAnimationFrame(animate);
-
-    renderer.render(scene, camera);
 
     if (front) {
       light.position.x = curvePoints1[count].x;
@@ -161,5 +179,64 @@ window.addEventListener("DOMContentLoaded", () => {
 
     count = count + 1;
   };
+  renderer.render(scene, camera);
+  cameramove(a_push, s_push, d_push, w_push, up_push, down_push,
+    q_push, e_push, r_push, zeroLook, Xrotate, Radius, camera)
   animate();
 });
+
+// キーを押した時の処理
+document.onkeydown = KeyDownFunc;
+function KeyDownFunc(e) {
+
+  switch (e.keyCode) {
+    case 65: // 左 A
+      a_push = true;
+      zeroLook = true;
+      break;
+    case 83: // 下 S
+      s_push = true;
+      zeroLook = true;
+      break;
+    case 68: // 右 D
+      d_push = true;
+      zeroLook = true;
+      break;
+    case 87: // 上 W
+      w_push = true;
+      zeroLook = true;
+      break;
+    case 219: // 手前 down
+      down_push = true;
+      break;
+    case 221: // 奥 up
+      up_push = true;
+      break;
+  }
+}
+// キーを離した時の処理
+document.onkeyup = KeyUpFunc;
+function KeyUpFunc(e) {
+
+  switch (e.keyCode) {
+    case 65: // 左 A
+      a_push = false;
+      console.log('pushA')
+      break;
+    case 83: // 下 S
+      s_push = false;
+      break;
+    case 68: // 右 D
+      d_push = false;
+      break;
+    case 87: // 上 W
+      w_push = false;
+      break;
+    case 219: // 手前 down
+      down_push = false;
+      break;
+    case 221: // 奥 up
+      up_push = false;
+      break;
+  }
+}
