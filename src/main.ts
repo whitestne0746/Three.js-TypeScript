@@ -1,15 +1,22 @@
-//import "imports-loader?THREE=three!three/examples/js/controls/FirstPersonControls.js";
-import * as THREE from "three";
-import { default as cameramove } from './cameramove'
-//import {  } from ''
-//const THREE = require("three-js")(["EffectComposer", "OrbitControls"]);
-//const FirstPersonControls = require('three-first-person-controls');
+import * as THREE from "three"
+import { default as cameramove } from "./cameramove"
+// import {  } from ''
+// const THREE = require("three-js")(["EffectComposer", "OrbitControls"]);
+// const FirstPersonControls = require('three-first-person-controls');
 
-var a_push, s_push, d_push, w_push, up_push, down_push,
-  q_push, e_push, r_push, zeroLook;
+let aPush: boolean
+let sPush: boolean
+let dPush: boolean
+let wPush: boolean
+let upPush: boolean
+let downPush: boolean
+// let qPush: boolean
+// let ePush: boolean
+// let rPush: boolean
+let zeroLook: boolean
 
-var Xrotate = 0;
-var Radius;
+const Xrotate = 0;
+const Radius = 0
 
 window.addEventListener("DOMContentLoaded", () => {
   // レンダラーを作成
@@ -25,10 +32,12 @@ window.addEventListener("DOMContentLoaded", () => {
     90,
     window.innerWidth / window.innerHeight,
     0.1,
-    2000
+    2000,
   );
   camera.position.set(0, 10, 200);
   camera.setLens(20, 100);
+
+  const controls = new THREE.OrbitControls(camera);
 
   // --------------------------------------------------------------------
   // オブジェクト
@@ -54,7 +63,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const texture1 = new THREE.TextureLoader().load("../texture/building.png");
   const geometry1 = new THREE.BoxGeometry(20, 20, 150);
   const material1 = new THREE.MeshPhongMaterial({
-    map: texture1
+    map: texture1,
   });
   const building1 = new THREE.Mesh(geometry1, material1);
   building1.position.set(-30, 10, 0);
@@ -65,7 +74,7 @@ window.addEventListener("DOMContentLoaded", () => {
   // 右側の建物
   const texture2 = new THREE.TextureLoader().load("../texture/building1.png");
   const material2 = new THREE.MeshPhongMaterial({
-    map: texture2
+    map: texture2,
   });
   const geometry2 = new THREE.BoxGeometry(50, 30, 60);
   const building2 = new THREE.Mesh(geometry2, material2);
@@ -76,7 +85,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   const geometry3 = new THREE.BoxGeometry(40, 10, 10);
   const material3 = new THREE.MeshPhongMaterial({
-    color: 0xffffff
+    color: 0xffffff,
   });
   const building3 = new THREE.Mesh(geometry3, material3);
   building3.position.set(20, 5, 75);
@@ -85,14 +94,14 @@ window.addEventListener("DOMContentLoaded", () => {
   scene.add(building3);
 
   const loader = new THREE.ObjectLoader();
-  loader.load("../model/standard-male-figure.json", obj => {
+  loader.load("../model/standard-male-figure.json", (obj) => {
     const model = obj;
     model.scale.set(2, 2, 2);
     model.position.set(10, 0, 0);
     scene.add(model);
   });
 
-  loader.load("../model/standard-female-figure.json", obj => {
+  loader.load("../model/standard-female-figure.json", (obj) => {
     const model1 = obj;
     model1.scale.set(0.5, 0.5, 0.5);
     model1.position.set(-9, 0, 80);
@@ -103,37 +112,37 @@ window.addEventListener("DOMContentLoaded", () => {
   const plane = new THREE.Mesh(
     new THREE.PlaneGeometry(10000, 10000),
     new THREE.MeshPhongMaterial({
-      color: 0xdcdcdc
-    })
-  );
+      color: 0xdcdcdc,
+    }),
+  )
   plane.rotation.x = -Math.PI / 2;
-  plane.receiveShadow = true;
+  plane.receiveShadow = true
   scene.add(plane);
 
   // ここからカーブ
   const sep = 720; // 3点を何分割するか
 
   // 太陽（光源）が表にあるとき
-  var point01 = new THREE.Vector3(0, 0, 300);
-  var point02 = new THREE.Vector3(200, 260, 0);
-  var point03 = new THREE.Vector3(0, 0, -300);
+  const point01 = new THREE.Vector3(0, 0, 300);
+  const point02 = new THREE.Vector3(200, 260, 0);
+  const point03 = new THREE.Vector3(0, 0, -300);
 
-  var curve1 = new THREE.QuadraticBezierCurve3(point01, point02, point03);
-  var curvePoints1 = curve1.getPoints(sep);
+  const curve1 = new THREE.QuadraticBezierCurve3(point01, point02, point03);
+  const curvePoints1 = curve1.getPoints(sep);
 
   // 太陽（光源）が裏にあるとき
-  var point04 = new THREE.Vector3(0, 0, -300);
-  var point05 = new THREE.Vector3(-200, -260, 0);
-  var point06 = new THREE.Vector3(0, 0, 300);
+  const point04 = new THREE.Vector3(0, 0, -300);
+  const point05 = new THREE.Vector3(-200, -260, 0);
+  const point06 = new THREE.Vector3(0, 0, 300);
 
   // 3点をsep点で分割しカーブを得る
-  var curve2 = new THREE.QuadraticBezierCurve3(point04, point05, point06);
-  var curvePoints2 = curve2.getPoints(sep);
+  const curve2 = new THREE.QuadraticBezierCurve3(point04, point05, point06);
+  const curvePoints2 = curve2.getPoints(sep);
 
   renderer.shadowMapEnabled = true;
 
   // read city model
-  loader.load("../model/center-city-sci-fi.json", obj => {
+  loader.load("../model/center-city-sci-fi.json", (obj) => {
     const city = obj;
     city.scale.set(0.5, 0.5, 0.5);
     city.position.set(-200, 0, 200);
@@ -144,13 +153,12 @@ window.addEventListener("DOMContentLoaded", () => {
 
   document.body.appendChild(renderer.domElement);
 
-  //camera.lookAt(scene.position);
+  // camera.lookAt(scene.position);
 
-  var angle = Math.PI / 2;
-  var angle1 = 0;
-  var front = true;
-  var back = false;
-  var count = 0;
+  let angle = 0;
+  let front = true;
+  let back = false;
+  let count = 0;
 
   const animate = (): void => {
     requestAnimationFrame(animate);
@@ -159,7 +167,7 @@ window.addEventListener("DOMContentLoaded", () => {
       light.position.x = curvePoints1[count].x;
       light.position.y = curvePoints1[count].y;
       light.position.z = curvePoints1[count].z;
-      if (count == sep) {
+      if (count === sep) {
         front = false;
         back = true;
         count = 0;
@@ -168,20 +176,22 @@ window.addEventListener("DOMContentLoaded", () => {
       light.position.x = curvePoints2[count].x;
       light.position.y = curvePoints2[count].y;
       light.position.z = curvePoints2[count].z;
-      if (count == sep) {
+      if (count === sep) {
         back = false;
         front = true;
         count = 0;
       }
     }
 
-    angle1 += Math.PI / 180;
+    angle += Math.PI / 180;
 
     count = count + 1;
   };
   renderer.render(scene, camera);
-  cameramove(a_push, s_push, d_push, w_push, up_push, down_push,
-    q_push, e_push, r_push, zeroLook, Xrotate, Radius, camera)
+  /*
+  cameramove(a_push, s_push, d_push, w_push, up_push, down_push, q_push,
+    e_push, r_push, zeroLook, Xrotate, Radius, camera)
+  */
   animate();
 });
 
@@ -191,26 +201,26 @@ function KeyDownFunc(e) {
 
   switch (e.keyCode) {
     case 65: // 左 A
-      a_push = true;
+      aPush = true;
       zeroLook = true;
       break;
     case 83: // 下 S
-      s_push = true;
+      sPush = true;
       zeroLook = true;
       break;
     case 68: // 右 D
-      d_push = true;
+      dPush = true;
       zeroLook = true;
       break;
     case 87: // 上 W
-      w_push = true;
+      wPush = true;
       zeroLook = true;
       break;
     case 219: // 手前 down
-      down_push = true;
+      downPush = true;
       break;
     case 221: // 奥 up
-      up_push = true;
+      upPush = true;
       break;
   }
 }
@@ -220,23 +230,23 @@ function KeyUpFunc(e) {
 
   switch (e.keyCode) {
     case 65: // 左 A
-      a_push = false;
-      console.log('pushA')
+      aPush = false;
+      console.log("pushA")
       break;
     case 83: // 下 S
-      s_push = false;
+      sPush = false;
       break;
     case 68: // 右 D
-      d_push = false;
+      dPush = false;
       break;
     case 87: // 上 W
-      w_push = false;
+      wPush = false;
       break;
     case 219: // 手前 down
-      down_push = false;
+      downPush = false;
       break;
     case 221: // 奥 up
-      up_push = false;
+      upPush = false;
       break;
   }
 }
