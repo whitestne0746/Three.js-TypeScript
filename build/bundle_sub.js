@@ -70,15 +70,41 @@
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_three__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__key__ = __webpack_require__(2);
 
+
+/*
+let status = {
+  aPush: false,
+  sPush: false,
+  dPush: false,
+  wPush: false,
+  upPush: false,
+  downPush: false,
+  zerolook: false,
+}
+*/
+var camera = new __WEBPACK_IMPORTED_MODULE_0_three__["g" /* PerspectiveCamera */](90, window.innerWidth / window.innerHeight, 0.1, 2000);
+camera.position.set(0, 10, 200);
+camera.setLens(20, 100);
+var key = new __WEBPACK_IMPORTED_MODULE_1__key__["a" /* default */](camera);
+var keyStatus;
+var rotx = 0;
 window.addEventListener("DOMContentLoaded", function () {
     var renderer = new __WEBPACK_IMPORTED_MODULE_0_three__["m" /* WebGLRenderer */]();
     renderer.setClearColor(0xffffff);
     renderer.setSize(window.innerWidth, window.innerHeight);
     var scene = new __WEBPACK_IMPORTED_MODULE_0_three__["j" /* Scene */]();
-    var camera = new __WEBPACK_IMPORTED_MODULE_0_three__["g" /* PerspectiveCamera */](90, window.innerWidth / window.innerHeight, 0.1, 2000);
-    camera.position.set(0, 10, 200);
-    camera.setLens(20, 100);
+    /*
+    const camera = new THREE.PerspectiveCamera(
+      90,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      2000,
+    )
+    camera.position.set(0, 10, 200)
+    camera.setLens(20, 100)
+    */
     var light = new __WEBPACK_IMPORTED_MODULE_0_three__["c" /* DirectionalLight */](0xf4a460);
     light.position.set(50, 100, -100);
     light.shadow.camera.left = -1000;
@@ -160,12 +186,11 @@ window.addEventListener("DOMContentLoaded", function () {
     // read city model
     loader.load("../model/center-city-sci-fi.json", function (obj) {
         var city = obj;
-        city.scale.set(0.5, 0.5, 0.5);
-        city.position.set(-200, 0, 200);
+        city.scale.set(1.0, 1.0, 1.0);
+        city.position.set(-200, 0, -1000);
         scene.add(city);
     });
     document.body.appendChild(renderer.domElement);
-    var angle = 0;
     var front = true;
     var back = false;
     var count = 0;
@@ -191,12 +216,52 @@ window.addEventListener("DOMContentLoaded", function () {
                 count = 0;
             }
         }
-        angle += Math.PI / 180;
         count = count + 1;
+        // console.log(keyStatus)
+        if (keyStatus === "up") {
+            camera.rotation.x += 0.02;
+        }
+        renderer.render(scene, camera);
     };
-    renderer.render(scene, camera);
     animate();
 });
+/*
+document.onkeydown = KeyDownFunc
+function KeyDownFunc(e) {
+  switch (e.keyCode) {
+    case 65: // 左 A
+      aPush = true
+      zeroLook = true
+      break
+    case 83: // 下 S
+      sPush = true
+      zeroLook = true
+      break
+    case 68: // 右 D
+      dPush = true
+      zeroLook = true
+      break
+    case 87: // 上 W
+      wPush = true
+      zeroLook = true
+      break
+    case 219: // 手前 down
+      downPush = true
+      break
+    case 221: // 奥 up
+      upPush = true
+      break
+  }
+}
+*/
+// キーを離した時の処理
+document.onkeyup = KeyDown;
+function KeyDown() {
+    // key.keyDown(e)
+    keyStatus = key.keyDown(event);
+    // console.log(keyStatus)
+    // rotx += 0.02
+}
 
 
 /***/ }),
@@ -44434,6 +44499,108 @@ function CanvasRenderer() {
 }
 
 
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var Key = /** @class */ (function () {
+    function Key(camera) {
+        this.aPush = false;
+        this.sPush = false;
+        this.dPush = false;
+        this.wPush = false;
+        this.upPush = false;
+        this.downPush = false;
+        this.leftPush = false;
+        this.rightPush = false;
+        this.zerolook = false;
+        this.spx = 0.6;
+        this.spy = 0.6;
+        this.spz = 0.6;
+        this.rox = 0;
+        this.roy = 0;
+        this.roz = 0;
+        this.camera = camera;
+        this.key = "";
+    }
+    Key.prototype.keyDown = function (e) {
+        switch (e.keyCode) {
+            case 65:// 左 A
+                this.aPush = true;
+                this.key = "a";
+                break;
+            case 83:// 下 S
+                this.sPush = true;
+                this.key = "s";
+                break;
+            case 68:// 右 D
+                this.dPush = true;
+                this.key = "d";
+                break;
+            case 87:// 上 W
+                this.wPush = true;
+                this.key = "w";
+                break;
+            case 18:// 手前 down
+                this.downPush = true;
+                this.key = "down";
+                break;
+            case 16:// 奥 up
+                this.upPush = true;
+                this.key = "up";
+                console.log(this.key);
+                break;
+            case 13:
+                this.leftPush = true;
+                this.key = "left";
+                break;
+            case 17:
+                this.rightPush = true;
+                this.key = "right";
+                break;
+        }
+        return this.key;
+    };
+    Key.prototype.keyUp = function (e) {
+        switch (e.keyCode) {
+            case 65:// 左 A
+                this.aPush = false;
+                break;
+            case 83:// 下 S
+                this.sPush = false;
+                break;
+            case 68:// 右 D
+                this.dPush = false;
+                break;
+            case 87:// 上 W
+                this.wPush = false;
+                break;
+            case 18:// 手前 down
+                this.downPush = false;
+                break;
+            case 16:// 奥 up
+                this.upPush = false;
+                break;
+            case 13:
+                this.leftPush = false;
+                break;
+            case 17:
+                this.rightPush = false;
+                break;
+        }
+    };
+    Key.prototype.cameraMove = function (camera) {
+        if (this.aPush) {
+            this.rox = camera.rotation.x + 0.6;
+        }
+        return this.rox;
+    };
+    return Key;
+}());
+/* harmony default export */ __webpack_exports__["a"] = (Key);
 
 
 /***/ })

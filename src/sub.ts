@@ -1,4 +1,30 @@
 import * as THREE from "three"
+import Key from "./key"
+
+/*
+let status = {
+  aPush: false,
+  sPush: false,
+  dPush: false,
+  wPush: false,
+  upPush: false,
+  downPush: false,
+  zerolook: false,
+}
+*/
+
+const camera = new THREE.PerspectiveCamera(
+  90,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  2000,
+)
+camera.position.set(0, 10, 200)
+camera.setLens(20, 100)
+const key = new Key(camera)
+let keyStatus: any
+
+let rotx = 0
 
 window.addEventListener("DOMContentLoaded", () => {
   const renderer = new THREE.WebGLRenderer()
@@ -7,6 +33,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   const scene = new THREE.Scene()
 
+  /*
   const camera = new THREE.PerspectiveCamera(
     90,
     window.innerWidth / window.innerHeight,
@@ -15,6 +42,7 @@ window.addEventListener("DOMContentLoaded", () => {
   )
   camera.position.set(0, 10, 200)
   camera.setLens(20, 100)
+  */
 
   const light = new THREE.DirectionalLight(0xf4a460)
   light.position.set(50, 100, -100)
@@ -116,14 +144,13 @@ window.addEventListener("DOMContentLoaded", () => {
   // read city model
   loader.load("../model/center-city-sci-fi.json", (obj) => {
     const city = obj
-    city.scale.set(0.5, 0.5, 0.5)
-    city.position.set(-200, 0, 200)
+    city.scale.set(1.0, 1.0, 1.0)
+    city.position.set(-200, 0, -1000)
     scene.add(city)
   })
 
   document.body.appendChild(renderer.domElement)
 
-  let angle = 0
   let front = true
   let back = false
   let count = 0
@@ -150,11 +177,50 @@ window.addEventListener("DOMContentLoaded", () => {
         count = 0
       }
     }
-
-    angle += Math.PI / 180
-
     count = count + 1
+    // console.log(keyStatus)
+    if (keyStatus === "up") {
+      camera.rotation.x += 0.02
+    }
+    renderer.render(scene, camera)
   }
-  renderer.render(scene, camera)
   animate()
 })
+
+/*
+document.onkeydown = KeyDownFunc
+function KeyDownFunc(e) {
+  switch (e.keyCode) {
+    case 65: // 左 A
+      aPush = true
+      zeroLook = true
+      break
+    case 83: // 下 S
+      sPush = true
+      zeroLook = true
+      break
+    case 68: // 右 D
+      dPush = true
+      zeroLook = true
+      break
+    case 87: // 上 W
+      wPush = true
+      zeroLook = true
+      break
+    case 219: // 手前 down
+      downPush = true
+      break
+    case 221: // 奥 up
+      upPush = true
+      break
+  }
+}
+*/
+// キーを離した時の処理
+document.onkeyup = KeyDown
+function KeyDown() {
+  // key.keyDown(e)
+  keyStatus = key.keyDown(event)
+  // console.log(keyStatus)
+  // rotx += 0.02
+}
