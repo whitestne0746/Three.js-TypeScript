@@ -1,12 +1,20 @@
 //import "imports-loader?THREE=three!three/examples/js/controls/FirstPersonControls.js";
 import * as THREE from "three";
-import { default as cameramove } from './cameramove'
+import { default as cameramove } from "./cameramove";
 //import {  } from ''
 //const THREE = require("three-js")(["EffectComposer", "OrbitControls"]);
 //const FirstPersonControls = require('three-first-person-controls');
 
-var a_push, s_push, d_push, w_push, up_push, down_push,
-  q_push, e_push, r_push, zeroLook;
+var a_push,
+  s_push,
+  d_push,
+  w_push,
+  up_push,
+  down_push,
+  q_push,
+  e_push,
+  r_push,
+  zeroLook;
 
 var Xrotate = 0;
 var Radius;
@@ -180,15 +188,13 @@ window.addEventListener("DOMContentLoaded", () => {
     count = count + 1;
   };
   renderer.render(scene, camera);
-  cameramove(a_push, s_push, d_push, w_push, up_push, down_push,
-    q_push, e_push, r_push, zeroLook, Xrotate, Radius, camera)
+  //cameramove(a_push, s_push, d_push, w_push, up_push, down_push, q_push, e_push, r_push, zeroLook, Xrotate, Radius, camera)
   animate();
 });
 
 // キーを押した時の処理
 document.onkeydown = KeyDownFunc;
 function KeyDownFunc(e) {
-
   switch (e.keyCode) {
     case 65: // 左 A
       a_push = true;
@@ -217,11 +223,10 @@ function KeyDownFunc(e) {
 // キーを離した時の処理
 document.onkeyup = KeyUpFunc;
 function KeyUpFunc(e) {
-
   switch (e.keyCode) {
     case 65: // 左 A
       a_push = false;
-      console.log('pushA')
+      console.log("pushA");
       break;
     case 83: // 下 S
       s_push = false;

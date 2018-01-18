@@ -70,9 +70,7 @@
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_three__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__cameramove__ = __webpack_require__(2);
 //import "imports-loader?THREE=three!three/examples/js/controls/FirstPersonControls.js";
-
 
 //import {  } from ''
 //const THREE = require("three-js")(["EffectComposer", "OrbitControls"]);
@@ -215,7 +213,7 @@ window.addEventListener("DOMContentLoaded", function () {
         count = count + 1;
     };
     renderer.render(scene, camera);
-    Object(__WEBPACK_IMPORTED_MODULE_1__cameramove__["a" /* default */])(a_push, s_push, d_push, w_push, up_push, down_push, q_push, e_push, r_push, zeroLook, Xrotate, Radius, camera);
+    //cameramove(a_push, s_push, d_push, w_push, up_push, down_push, q_push, e_push, r_push, zeroLook, Xrotate, Radius, camera)
     animate();
 });
 // キーを押した時の処理
@@ -252,7 +250,7 @@ function KeyUpFunc(e) {
     switch (e.keyCode) {
         case 65:// 左 A
             a_push = false;
-            console.log('pushA');
+            console.log("pushA");
             break;
         case 83:// 下 S
             s_push = false;
@@ -44508,50 +44506,6 @@ function CanvasRenderer() {
 }
 
 
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony default export */ __webpack_exports__["a"] = (function (a_push, s_push, d_push, w_push, up_push, down_push, q_push, e_push, r_push, zeroLook, Xrotate, Radius, camera) {
-    if (a_push) {
-        --Xrotate;
-    } // 時計回り
-    if (d_push) {
-        ++Xrotate;
-    } // 反時計回り    
-    if (Xrotate == -360 || 360 == Xrotate) {
-        Xrotate = 0;
-    } // Xrotateが 360 を越えたら 0 で初期化
-    // カメラ位置(零戦までの距離)を400〜1000までに制限
-    if (200 < Radius) {
-        if (down_push) {
-            Radius -= 10;
-        }
-    }
-    if (Radius < 1000) {
-        if (up_push) {
-            Radius += 10;
-        }
-    }
-    if (s_push) {
-        if (-600 < camera.position.y) {
-            camera.position.y -= 10;
-        }
-    }
-    if (w_push) {
-        if (camera.position.y < 600) {
-            camera.position.y += 10;
-        }
-    }
-    // カメラの視点回転の計算
-    camera.position.x = Radius * Math.sin(Xrotate * Math.PI / 180);
-    camera.position.z = Radius * Math.cos(Xrotate * Math.PI / 180);
-    // 常時の方向を向かせる
-    //if(zeroLook) { camera.lookAt(obj.position);}
-});
 
 
 /***/ })
