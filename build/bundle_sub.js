@@ -70,41 +70,17 @@
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_three__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__key__ = __webpack_require__(2);
 
-
-/*
-let status = {
-  aPush: false,
-  sPush: false,
-  dPush: false,
-  wPush: false,
-  upPush: false,
-  downPush: false,
-  zerolook: false,
-}
-*/
 var camera = new __WEBPACK_IMPORTED_MODULE_0_three__["g" /* PerspectiveCamera */](90, window.innerWidth / window.innerHeight, 0.1, 2000);
 camera.position.set(0, 10, 200);
 camera.setLens(20, 100);
-var key = new __WEBPACK_IMPORTED_MODULE_1__key__["a" /* default */](camera);
-var keyStatus;
-var rotx = 0;
+var key;
+var tall = 2;
 window.addEventListener("DOMContentLoaded", function () {
     var renderer = new __WEBPACK_IMPORTED_MODULE_0_three__["m" /* WebGLRenderer */]();
     renderer.setClearColor(0xffffff);
     renderer.setSize(window.innerWidth, window.innerHeight);
     var scene = new __WEBPACK_IMPORTED_MODULE_0_three__["j" /* Scene */]();
-    /*
-    const camera = new THREE.PerspectiveCamera(
-      90,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      2000,
-    )
-    camera.position.set(0, 10, 200)
-    camera.setLens(20, 100)
-    */
     var light = new __WEBPACK_IMPORTED_MODULE_0_three__["c" /* DirectionalLight */](0xf4a460);
     light.position.set(50, 100, -100);
     light.shadow.camera.left = -1000;
@@ -121,7 +97,7 @@ window.addEventListener("DOMContentLoaded", function () {
     var texture1 = new __WEBPACK_IMPORTED_MODULE_0_three__["k" /* TextureLoader */]().load("../texture/building.png");
     var geometry1 = new __WEBPACK_IMPORTED_MODULE_0_three__["b" /* BoxGeometry */](20, 20, 150);
     var material1 = new __WEBPACK_IMPORTED_MODULE_0_three__["e" /* MeshPhongMaterial */]({
-        map: texture1,
+        map: texture1
     });
     var building1 = new __WEBPACK_IMPORTED_MODULE_0_three__["d" /* Mesh */](geometry1, material1);
     building1.position.set(-30, 10, 0);
@@ -130,7 +106,7 @@ window.addEventListener("DOMContentLoaded", function () {
     scene.add(building1);
     var texture2 = new __WEBPACK_IMPORTED_MODULE_0_three__["k" /* TextureLoader */]().load("../texture/building1.png");
     var material2 = new __WEBPACK_IMPORTED_MODULE_0_three__["e" /* MeshPhongMaterial */]({
-        map: texture2,
+        map: texture2
     });
     var geometry2 = new __WEBPACK_IMPORTED_MODULE_0_three__["b" /* BoxGeometry */](50, 30, 60);
     var building2 = new __WEBPACK_IMPORTED_MODULE_0_three__["d" /* Mesh */](geometry2, material2);
@@ -140,7 +116,7 @@ window.addEventListener("DOMContentLoaded", function () {
     scene.add(building2);
     var geometry3 = new __WEBPACK_IMPORTED_MODULE_0_three__["b" /* BoxGeometry */](40, 10, 10);
     var material3 = new __WEBPACK_IMPORTED_MODULE_0_three__["e" /* MeshPhongMaterial */]({
-        color: 0xffffff,
+        color: 0xffffff
     });
     var building3 = new __WEBPACK_IMPORTED_MODULE_0_three__["d" /* Mesh */](geometry3, material3);
     building3.position.set(20, 5, 75);
@@ -162,7 +138,7 @@ window.addEventListener("DOMContentLoaded", function () {
     });
     // 地面
     var plane = new __WEBPACK_IMPORTED_MODULE_0_three__["d" /* Mesh */](new __WEBPACK_IMPORTED_MODULE_0_three__["h" /* PlaneGeometry */](10000, 10000), new __WEBPACK_IMPORTED_MODULE_0_three__["e" /* MeshPhongMaterial */]({
-        color: 0xdcdcdc,
+        color: 0xdcdcdc
     }));
     plane.rotation.x = -Math.PI / 2;
     plane.receiveShadow = true;
@@ -187,13 +163,19 @@ window.addEventListener("DOMContentLoaded", function () {
     loader.load("../model/center-city-sci-fi.json", function (obj) {
         var city = obj;
         city.scale.set(1.0, 1.0, 1.0);
-        city.position.set(-200, 0, -1000);
+        city.position.set(-200, 0, 500);
         scene.add(city);
     });
     document.body.appendChild(renderer.domElement);
     var front = true;
     var back = false;
     var count = 0;
+    var rox = 0.02;
+    var roy = 0.02;
+    var roz = 0.02;
+    var spx = 0.6;
+    var spy = 0.6;
+    var spz = 0.6;
     var animate = function () {
         requestAnimationFrame(animate);
         if (front) {
@@ -216,51 +198,108 @@ window.addEventListener("DOMContentLoaded", function () {
                 count = 0;
             }
         }
+        if (key === "up") {
+            // camera.rotation.x +=rox
+            camera.rotation.x += rox;
+            // camera.rotation.y -= camera.rotation.y
+        }
+        else {
+            if (key === "down") {
+                camera.rotation.x -= rox;
+            }
+        }
+        if (key === "right") {
+            camera.rotation.y -= roy;
+        }
+        else {
+            if (key === "left") {
+                camera.rotation.y += roy;
+            }
+        }
+        if (key === "w") {
+            console.log("w");
+            camera.position.z -= Math.sin(-(camera.rotation.y - Math.PI / 2)) / 2;
+            camera.position.x -= Math.cos(-(camera.rotation.y - Math.PI / 2)) / 2;
+        }
+        else {
+            if (key === "s") {
+                camera.position.z += Math.sin(-(camera.rotation.y - Math.PI / 2)) / 2;
+                camera.position.x += Math.cos(-(camera.rotation.y - Math.PI / 2)) / 2;
+            }
+        }
+        if (key === "d") {
+            camera.position.z -= Math.sin(-(camera.rotation.y - Math.PI)) / 2;
+            camera.position.x -= Math.cos(-(camera.rotation.y - Math.PI)) / 2;
+        }
+        else {
+            if (key === "a") {
+                camera.position.z += Math.sin(-(camera.rotation.y - Math.PI)) / 2;
+                camera.position.x += Math.cos(-(camera.rotation.y - Math.PI)) / 2;
+            }
+        }
+        if (key === "space") {
+            camera.position.y += spy;
+        }
+        else {
+            if (key === "shift") {
+                if (camera.position.y > tall) {
+                    camera.position.y -= spy;
+                }
+            }
+        }
         count = count + 1;
         // console.log(keyStatus)
-        if (keyStatus === "up") {
-            camera.rotation.x += 0.02;
-        }
         renderer.render(scene, camera);
     };
     animate();
 });
-/*
-document.onkeydown = KeyDownFunc
-function KeyDownFunc(e) {
-  switch (e.keyCode) {
-    case 65: // 左 A
-      aPush = true
-      zeroLook = true
-      break
-    case 83: // 下 S
-      sPush = true
-      zeroLook = true
-      break
-    case 68: // 右 D
-      dPush = true
-      zeroLook = true
-      break
-    case 87: // 上 W
-      wPush = true
-      zeroLook = true
-      break
-    case 219: // 手前 down
-      downPush = true
-      break
-    case 221: // 奥 up
-      upPush = true
-      break
-  }
+document.onkeydown = KeyDown;
+function KeyDown(e) {
+    switch (e.keyCode) {
+        case 65:// 左 A
+            key = "a";
+            break;
+        case 83:// 下 S
+            key = "s";
+            break;
+        case 68:// 右 D
+            key = "d";
+            break;
+        case 87:// 上 W
+            key = "w";
+            break;
+        case 40:// 手前 down
+            key = "down";
+            break;
+        case 38:// 奥 up
+            key = "up";
+            console.log("up");
+            break;
+        case 37:
+            key = "left";
+            break;
+        case 39:
+            key = "right";
+            break;
+    }
 }
-*/
-// キーを離した時の処理
-document.onkeyup = KeyDown;
-function KeyDown() {
-    // key.keyDown(e)
-    keyStatus = key.keyDown(event);
-    // console.log(keyStatus)
-    // rotx += 0.02
+document.onkeyup = KeyUp;
+function KeyUp(e) {
+    if (e.keyCode === 39 || e.keyCode === 37) {
+        key = "rot(R or L)";
+    }
+    if (e.keyCode === 38 || e.keyCode === 40) {
+        key = "rot(UP or DOWN)";
+    }
+    if (e.keyCode === 87 || e.keyCode === 83) {
+        key = "pos(Forward or Back)";
+    }
+    if (e.keyCode === 65 || e.keyCode === 68) {
+        key = "pos(R or L)";
+    }
+    if (e.keyCode === 32 || e.keyCode === 16) {
+        key = "pos(UP or DOWN)";
+    }
 }
 
 
@@ -44499,108 +44538,6 @@ function CanvasRenderer() {
 }
 
 
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-var Key = /** @class */ (function () {
-    function Key(camera) {
-        this.aPush = false;
-        this.sPush = false;
-        this.dPush = false;
-        this.wPush = false;
-        this.upPush = false;
-        this.downPush = false;
-        this.leftPush = false;
-        this.rightPush = false;
-        this.zerolook = false;
-        this.spx = 0.6;
-        this.spy = 0.6;
-        this.spz = 0.6;
-        this.rox = 0;
-        this.roy = 0;
-        this.roz = 0;
-        this.camera = camera;
-        this.key = "";
-    }
-    Key.prototype.keyDown = function (e) {
-        switch (e.keyCode) {
-            case 65:// 左 A
-                this.aPush = true;
-                this.key = "a";
-                break;
-            case 83:// 下 S
-                this.sPush = true;
-                this.key = "s";
-                break;
-            case 68:// 右 D
-                this.dPush = true;
-                this.key = "d";
-                break;
-            case 87:// 上 W
-                this.wPush = true;
-                this.key = "w";
-                break;
-            case 18:// 手前 down
-                this.downPush = true;
-                this.key = "down";
-                break;
-            case 16:// 奥 up
-                this.upPush = true;
-                this.key = "up";
-                console.log(this.key);
-                break;
-            case 13:
-                this.leftPush = true;
-                this.key = "left";
-                break;
-            case 17:
-                this.rightPush = true;
-                this.key = "right";
-                break;
-        }
-        return this.key;
-    };
-    Key.prototype.keyUp = function (e) {
-        switch (e.keyCode) {
-            case 65:// 左 A
-                this.aPush = false;
-                break;
-            case 83:// 下 S
-                this.sPush = false;
-                break;
-            case 68:// 右 D
-                this.dPush = false;
-                break;
-            case 87:// 上 W
-                this.wPush = false;
-                break;
-            case 18:// 手前 down
-                this.downPush = false;
-                break;
-            case 16:// 奥 up
-                this.upPush = false;
-                break;
-            case 13:
-                this.leftPush = false;
-                break;
-            case 17:
-                this.rightPush = false;
-                break;
-        }
-    };
-    Key.prototype.cameraMove = function (camera) {
-        if (this.aPush) {
-            this.rox = camera.rotation.x + 0.6;
-        }
-        return this.rox;
-    };
-    return Key;
-}());
-/* harmony default export */ __webpack_exports__["a"] = (Key);
 
 
 /***/ })
