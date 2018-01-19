@@ -1,34 +1,33 @@
 module.exports = {
   // メインとなるJavaScriptファイル（エントリーポイント）
-  entry: './src/sub.ts',
+  entry: "./src/main.ts",
   // ファイルの出力設定
   output: {
     //  出力ファイルのディレクトリ名
     path: `${__dirname}/build`,
     // 出力ファイル名
-    filename: 'bundle_sub.js'
+    filename: "bundle.js"
   },
   module: {
-    rules: [{
+    rules: [
+      {
         // 拡張子 .ts の場合
         test: /\.ts$/,
         // TypeScript をコンパイルする
-        use: 'awesome-typescript-loader'
+        use: "awesome-typescript-loader"
       },
       // ソースマップファイルの処理
       {
-        enforce: 'pre',
+        enforce: "pre",
         test: /\.js$/,
-        loader: 'source-map-loader'
+        loader: "source-map-loader"
       }
     ]
   },
   // import 文で .ts ファイルを解決するため
   resolve: {
-    extensions: [
-      '.ts', '.js', '.json'
-    ],
+    extensions: [".ts", ".js", ".json"]
   },
   // ソースマップを有効に
-  devtool: 'source-map'
+  devtool: "source-map"
 };

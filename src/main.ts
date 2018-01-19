@@ -1,47 +1,23 @@
-import * as THREE from "three"
-import { default as cameramove } from "./cameramove"
-// import {  } from ''
-// const THREE = require("three-js")(["EffectComposer", "OrbitControls"]);
-// const FirstPersonControls = require('three-first-person-controls');
+import * as THREE from "three";
 
-let aPush: boolean
-let sPush: boolean
-let dPush: boolean
-let wPush: boolean
-let upPush: boolean
-let downPush: boolean
-// let qPush: boolean
-// let ePush: boolean
-// let rPush: boolean
-let zeroLook: boolean
-
-const Xrotate = 0;
-const Radius = 0
+const camera = new THREE.PerspectiveCamera(
+  90,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  2000
+);
+camera.position.set(0, 10, 200);
+camera.setLens(20, 100);
+let key: string;
+const tall = 2;
 
 window.addEventListener("DOMContentLoaded", () => {
-  // レンダラーを作成
   const renderer = new THREE.WebGLRenderer();
   renderer.setClearColor(0xffffff);
   renderer.setSize(window.innerWidth, window.innerHeight);
 
-  // シーンを作成
   const scene = new THREE.Scene();
 
-  // カメラを作成
-  const camera = new THREE.PerspectiveCamera(
-    90,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    2000,
-  );
-  camera.position.set(0, 10, 200);
-  camera.setLens(20, 100);
-
-  const controls = new THREE.OrbitControls(camera);
-
-  // --------------------------------------------------------------------
-  // オブジェクト
-  // 光源
   const light = new THREE.DirectionalLight(0xf4a460);
   light.position.set(50, 100, -100);
   light.shadow.camera.left = -1000;
@@ -59,11 +35,10 @@ window.addEventListener("DOMContentLoaded", () => {
   const amb = new THREE.AmbientLight("#464646");
   scene.add(amb);
 
-  // 左側の建物
   const texture1 = new THREE.TextureLoader().load("../texture/building.png");
   const geometry1 = new THREE.BoxGeometry(20, 20, 150);
   const material1 = new THREE.MeshPhongMaterial({
-    map: texture1,
+    map: texture1
   });
   const building1 = new THREE.Mesh(geometry1, material1);
   building1.position.set(-30, 10, 0);
@@ -71,10 +46,9 @@ window.addEventListener("DOMContentLoaded", () => {
   building1.receiveShadow = true;
   scene.add(building1);
 
-  // 右側の建物
   const texture2 = new THREE.TextureLoader().load("../texture/building1.png");
   const material2 = new THREE.MeshPhongMaterial({
-    map: texture2,
+    map: texture2
   });
   const geometry2 = new THREE.BoxGeometry(50, 30, 60);
   const building2 = new THREE.Mesh(geometry2, material2);
@@ -85,7 +59,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   const geometry3 = new THREE.BoxGeometry(40, 10, 10);
   const material3 = new THREE.MeshPhongMaterial({
-    color: 0xffffff,
+    color: 0xffffff
   });
   const building3 = new THREE.Mesh(geometry3, material3);
   building3.position.set(20, 5, 75);
@@ -94,14 +68,14 @@ window.addEventListener("DOMContentLoaded", () => {
   scene.add(building3);
 
   const loader = new THREE.ObjectLoader();
-  loader.load("../model/standard-male-figure.json", (obj) => {
+  loader.load("../model/standard-male-figure.json", obj => {
     const model = obj;
     model.scale.set(2, 2, 2);
     model.position.set(10, 0, 0);
     scene.add(model);
   });
 
-  loader.load("../model/standard-female-figure.json", (obj) => {
+  loader.load("../model/standard-female-figure.json", obj => {
     const model1 = obj;
     model1.scale.set(0.5, 0.5, 0.5);
     model1.position.set(-9, 0, 80);
@@ -112,11 +86,11 @@ window.addEventListener("DOMContentLoaded", () => {
   const plane = new THREE.Mesh(
     new THREE.PlaneGeometry(10000, 10000),
     new THREE.MeshPhongMaterial({
-      color: 0xdcdcdc,
-    }),
-  )
+      color: 0xdcdcdc
+    })
+  );
   plane.rotation.x = -Math.PI / 2;
-  plane.receiveShadow = true
+  plane.receiveShadow = true;
   scene.add(plane);
 
   // ここからカーブ
@@ -142,23 +116,26 @@ window.addEventListener("DOMContentLoaded", () => {
   renderer.shadowMapEnabled = true;
 
   // read city model
-  loader.load("../model/center-city-sci-fi.json", (obj) => {
+  loader.load("../model/center-city-sci-fi.json", obj => {
     const city = obj;
-    city.scale.set(0.5, 0.5, 0.5);
-    city.position.set(-200, 0, 200);
+    city.scale.set(1.0, 1.0, 1.0);
+    city.position.set(-200, 0, 500);
     scene.add(city);
   });
 
-  // --------------------------------------------------------------------
-
   document.body.appendChild(renderer.domElement);
 
-  // camera.lookAt(scene.position);
-
-  let angle = 0;
   let front = true;
   let back = false;
   let count = 0;
+
+  const rox = 0.02;
+  const roy = 0.02;
+  const roz = 0.02;
+
+  const spx = 0.6;
+  const spy = 0.6;
+  const spz = 0.6;
 
   const animate = (): void => {
     requestAnimationFrame(animate);
@@ -183,68 +160,105 @@ window.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    angle += Math.PI / 180;
+    if (key === "up") {
+      // camera.rotation.x +=rox
+      camera.rotation.x += rox;
+      // camera.rotation.y -= camera.rotation.y
+    } else {
+      if (key === "down") {
+        camera.rotation.x -= rox;
+      }
+    }
+    if (key === "right") {
+      camera.rotation.y -= roy;
+    } else {
+      if (key === "left") {
+        camera.rotation.y += roy;
+      }
+    }
 
+    if (key === "w") {
+      console.log("w");
+      camera.position.z -= Math.sin(-(camera.rotation.y - Math.PI / 2)) / 2;
+      camera.position.x -= Math.cos(-(camera.rotation.y - Math.PI / 2)) / 2;
+    } else {
+      if (key === "s") {
+        camera.position.z += Math.sin(-(camera.rotation.y - Math.PI / 2)) / 2;
+        camera.position.x += Math.cos(-(camera.rotation.y - Math.PI / 2)) / 2;
+      }
+    }
+
+    if (key === "d") {
+      camera.position.z -= Math.sin(-(camera.rotation.y - Math.PI)) / 2;
+      camera.position.x -= Math.cos(-(camera.rotation.y - Math.PI)) / 2;
+    } else {
+      if (key === "a") {
+        camera.position.z += Math.sin(-(camera.rotation.y - Math.PI)) / 2;
+        camera.position.x += Math.cos(-(camera.rotation.y - Math.PI)) / 2;
+      }
+    }
+    if (key === "space") {
+      camera.position.y += spy;
+    } else {
+      if (key === "shift") {
+        if (camera.position.y > tall) {
+          camera.position.y -= spy;
+        }
+      }
+    }
     count = count + 1;
+    // console.log(keyStatus)
+    renderer.render(scene, camera);
   };
-  renderer.render(scene, camera);
-  /*
-  cameramove(a_push, s_push, d_push, w_push, up_push, down_push, q_push,
-    e_push, r_push, zeroLook, Xrotate, Radius, camera)
-  */
   animate();
 });
 
-// キーを押した時の処理
-document.onkeydown = KeyDownFunc;
-function KeyDownFunc(e) {
+document.onkeydown = KeyDown;
+function KeyDown(e) {
   switch (e.keyCode) {
     case 65: // 左 A
-      aPush = true;
-      zeroLook = true;
+      key = "a";
       break;
     case 83: // 下 S
-      sPush = true;
-      zeroLook = true;
+      key = "s";
       break;
     case 68: // 右 D
-      dPush = true;
-      zeroLook = true;
+      key = "d";
       break;
     case 87: // 上 W
-      wPush = true;
-      zeroLook = true;
+      key = "w";
       break;
-    case 219: // 手前 down
-      downPush = true;
+    case 40: // 手前 down
+      key = "down";
       break;
-    case 221: // 奥 up
-      upPush = true;
+    case 38: // 奥 up
+      key = "up";
+      console.log("up");
+      break;
+    case 37:
+      key = "left";
+      break;
+    case 39:
+      key = "right";
       break;
   }
 }
-// キーを離した時の処理
-document.onkeyup = KeyUpFunc;
-function KeyUpFunc(e) {
-  switch (e.keyCode) {
-    case 65: // 左 A
-      aPush = false;
-      console.log("pushA")
-      break;
-    case 83: // 下 S
-      sPush = false;
-      break;
-    case 68: // 右 D
-      dPush = false;
-      break;
-    case 87: // 上 W
-      wPush = false;
-      break;
-    case 219: // 手前 down
-      downPush = false;
-      break;
-    case 221: // 奥 up
-      upPush = false;
-      break;
+
+document.onkeyup = KeyUp;
+function KeyUp(e) {
+  if (e.keyCode === 39 || e.keyCode === 37) {
+    key = "rot(R or L)";
+  }
+  if (e.keyCode === 38 || e.keyCode === 40) {
+    key = "rot(UP or DOWN)";
+  }
+  if (e.keyCode === 87 || e.keyCode === 83) {
+    key = "pos(Forward or Back)";
+  }
+  if (e.keyCode === 65 || e.keyCode === 68) {
+    key = "pos(R or L)";
+  }
+  if (e.keyCode === 32 || e.keyCode === 16) {
+    key = "pos(UP or DOWN)";
   }
 }
